@@ -17,7 +17,6 @@ from google.genai import types
 logging.basicConfig(level=logging.INFO)
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 SYSTEM_PROMPT = """
 Sei l'Assistente Virtuale e Concierge Digitale multilingua del Camping Coccorrocci (Marina di Gairo, Ogliastra, Sardegna).
@@ -81,8 +80,6 @@ BASE DI CONOSCENZA DETTAGLIATA (GROUNDED SULLE FONTI UFFICIALI):
 - Piscine Naturali: Spettacolari vasche naturali nelle immediate vicinanze, meta imperdibile per bagni e relax.
 - Sentieri & MTB: Diversi percorsi di trekking e mountain bike segnalati sulla mappa locale disponibile in reception.
 """
-
-client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
 DATE, ALLOGGIO, OSPITI, CONTATTO = range(4)
 
@@ -195,12 +192,11 @@ async def prenota_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text
-    print(f"💬 Messaggio ricevuto da {update.effective_user.first_name}: '{user_text}'", flush=True)
-    if not client:
-        await update.message.reply_text("⚠️ GEMINI_API_KEY non configurata nello script.")
-        return
+    api_key = os.getenv("GEMINI_API_KEY")
+
     try:
-        response = client.models.generate_content(
+        local_client = genai.Client(api_key=api_key)
+        response = local_client.models.generate_content(
             model="gemini-3.8-flash",
             contents=user_text,
             config=types.GenerateContentConfig(
@@ -214,6 +210,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Si è verificato un problema temporaneo. Puoi contattare direttamente la reception ai numeri:\n"
             "📞 +39 328 379 4773 / +39 379 1777 3509\n✉️ info@coccorroccicamping.com"
         )
+
     await update.message.reply_text(reply_text)
 
 
