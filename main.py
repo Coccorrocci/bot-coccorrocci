@@ -1,5 +1,8 @@
+import os
 import logging
 import nest_asyncio
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -15,6 +18,13 @@ from google.genai import types
 # Abilita nest_asyncio per Google Colab
 nest_asyncio.apply()
 logging.basicConfig(level=logging.INFO)
+
+# 🌐 Serverino web di supporto per il piano gratuito di Render
+class HealtCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK - Bot attivo")
 
 # ⚠️ LE TUE CHIAVI ⚠️
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN") 
