@@ -1,8 +1,7 @@
-import os
+import asyncio
 import logging
-import nest_asyncio
-import threading
-from http.server import HTTPServer, BaseHTTPRequestHandler
+import os
+from aiohttp import web
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -15,19 +14,9 @@ from telegram.ext import (
 from google import genai
 from google.genai import types
 
-# Abilita nest_asyncio per Google Colab
-nest_asyncio.apply()
 logging.basicConfig(level=logging.INFO)
 
-# 🌐 Serverino web di supporto per il piano gratuito di Render
-class HealtCheckHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"OK - Bot attivo")
-
-# ⚠️ LE TUE CHIAVI ⚠️
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN") 
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 SYSTEM_PROMPT = """
@@ -93,9 +82,23 @@ BASE DI CONOSCENZA DETTAGLIATA (GROUNDED SULLE FONTI UFFICIALI):
 - Sentieri & MTB: Diversi percorsi di trekking e mountain bike segnalati sulla mappa locale disponibile in reception.
 """
 
-client = genai.Client(vertexai=True, api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
+client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
 DATE, ALLOGGIO, OSPITI, CONTATTO = range(4)
+
+
+async def healthcheck(request):
+    return web.Response(text="OK - Bot attivo")
+
+
+async def run_web_server():
+    port = int(os.environ.get("PORT", 10000))
+    app_web = web.Application()
+    app_web.router.add_get("/", healthcheck)
+    runner = web.AppRunner(app_web)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -204,9 +207,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 system_instruction=SYSTEM_PROMPT
             ),
         )
-        reply_text = response.text
+        reply_text = response.text or "Non sono riuscito a generare una risposta."
     except Exception as e:
-        print(f"❌ Errore Gemini API: {e}", flush=True)
+        print(f"❌ Errore Gemini API: {repr(e)}", flush=True)
         reply_text = (
             "Si è verificato un problema temporaneo. Puoi contattare direttamente la reception ai numeri:\n"
             "📞 +39 328 379 4773 / +39 379 1777 3509\n✉️ info@coccorroccicamping.com"
@@ -216,10 +219,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def main():
     if not TELEGRAM_BOT_TOKEN or ":" not in TELEGRAM_BOT_TOKEN:
-        print("❌ ERRORE: Token Telegram non valido!", flush=True)
+        print("❌ ERRORE: Token Telegram non valido o mancante!", flush=True)
         return
 
-    print("🚀 Avvio del bot in modalità Colab...", flush=True)
+    await run_web_server()
     app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
 
     booking_handler = ConversationHandler(
@@ -239,10 +242,14 @@ async def main():
     app.add_handler(booking_handler)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    print("🟢 BOT IN ASCOLTO! (Usa il pulsante Stop per fermarlo)", flush=True)
+    print("🟢 BOT IN ASCOLTO!", flush=True)
     await app.initialize()
     await app.start()
     await app.updater.start_polling(drop_pending_updates=True)
 
+    while True:
+        await asyncio.sleep(3600)
 
-await main()
+
+if __name__ == "__main__":
+    asyncio.run(main())
