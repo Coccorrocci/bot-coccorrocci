@@ -5,90 +5,123 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Camping Coccorrocci | Concierge & Chat</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background:
+        radial-gradient(circle at 85% 10%, rgba(250, 204, 21, 0.24), transparent 36%),
+        radial-gradient(circle at 15% 25%, rgba(29, 78, 216, 0.08), transparent 42%),
+        linear-gradient(180deg, #fefce8 0%, #f5f3ea 48%, #e7e5dc 100%);
+    }
+    .pebble-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(30, 58, 138, 0.14);
+    }
+  </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+<body class="text-slate-800 font-sans min-h-screen flex flex-col justify-between">
 
   <!-- HEADER -->
-  <header class="bg-emerald-900 text-white p-4 shadow-lg sticky top-0 z-50">
-    <div class="max-w-md mx-auto flex justify-between items-center">
-      <div>
-        <h1 class="text-lg font-bold tracking-wide">🏕️ Camping Coccorrocci</h1>
-        <p class="text-xs text-emerald-200">Concierge Digitale • Marina di Gairo</p>
+  <header class="bg-[#1e3a8a] text-white p-4 shadow-md sticky top-0 z-50 border-b-2 border-amber-400">
+    <div class="max-w-lg mx-auto flex justify-between items-center gap-3">
+      <div class="flex items-center gap-3">
+        <!-- Se carichi il logo nel repo come "logo.png", rimuovi la classe "hidden" qui sotto -->
+        <img id="campLogo" src="logo.png" alt="Logo Camping Coccorrocci" class="w-11 h-11 rounded-full object-cover bg-amber-100 border border-amber-300/70 hidden" onload="this.classList.remove('hidden')">
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-wide text-amber-50">Camping Coccorrocci</h1>
+          <p class="text-xs text-amber-200/90">Ciottoli & Mare • Marina di Gairo</p>
+        </div>
       </div>
+      <span class="text-[11px] bg-amber-400 text-slate-900 px-2.5 py-1 rounded-full font-bold">
+        Concierge AI
+      </span>
     </div>
   </header>
 
   <!-- CONTENUTO PRINCIPALE -->
-  <main class="max-w-md mx-auto p-4 w-full flex-1 space-y-4">
+  <main class="max-w-lg mx-auto p-4 w-full flex-1 space-y-4">
 
     <!-- PULSANTI RAPIDI -->
-    <div class="grid grid-cols-2 gap-2 text-xs font-semibold">
-      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-        <span class="block text-slate-900 font-bold">🏊 Piscina</span>
-        <span class="text-slate-500 text-[10px]">09:00 - 17:30</span>
+    <div class="grid grid-cols-2 gap-2.5 text-xs">
+      <div class="pebble-card p-3.5 rounded-[22px] shadow-sm">
+        <span class="block text-[#1e3a8a] font-bold">🏊 Piscina</span>
+        <span class="text-slate-600 text-[11px]">09:00 - 17:30</span>
       </div>
-      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-        <span class="block text-slate-900 font-bold">🍹 Bar</span>
-        <span class="text-slate-500 text-[10px]">Gestione Indipendente</span>
+      <div class="pebble-card p-3.5 rounded-[22px] shadow-sm">
+        <span class="block text-[#1e3a8a] font-bold">🍹 Bar</span>
+        <span class="text-slate-600 text-[11px]">Gestione Indipendente</span>
       </div>
-      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-        <span class="block text-slate-900 font-bold">🏕️ Alloggi & Tende</span>
-        <span class="text-slate-500 text-[10px]">Aperto tutto l'anno</span>
+      <div class="pebble-card p-3.5 rounded-[22px] shadow-sm">
+        <span class="block text-[#1e3a8a] font-bold">🏕️ Alloggi & Tende</span>
+        <span class="text-slate-600 text-[11px]">Aperto tutto l'anno</span>
       </div>
-      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-        <span class="block text-slate-900 font-bold">🍕 Ristorante</span>
-        <span class="text-slate-500 text-[10px]">I 4 Mori</span>
+      <div class="pebble-card p-3.5 rounded-[22px] shadow-sm">
+        <span class="block text-[#1e3a8a] font-bold">🍕 Ristorante</span>
+        <span class="text-slate-600 text-[11px]">I 4 Mori</span>
       </div>
     </div>
 
     <!-- CHAT INTERATTIVA -->
-    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-4 flex flex-col h-[380px]">
-      <div class="flex items-center justify-between pb-2 border-b mb-2">
+    <div class="pebble-card rounded-[28px] shadow-md p-4 flex flex-col h-[430px]">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200/80 mb-3">
         <div class="flex items-center gap-2">
-          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-          <span class="font-bold text-slate-800 text-sm">Concierge Digitale AI</span>
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400 ring-2 ring-amber-200"></span>
+          <span class="font-bold text-[#1e3a8a] text-sm">Assistente Coccorrocci</span>
         </div>
-        <span class="text-[11px] text-slate-400">Multilingua 🌍</span>
+        <span class="text-[11px] text-slate-500">Multilingua 🌍</span>
+      </div>
+
+      <!-- DOMANDE RAPIDE -->
+      <div class="flex flex-wrap gap-1.5 mb-3">
+        <button type="button" onclick="quickAsk('Quali sono gli orari del bar e le specialità?')" class="text-[11px] bg-amber-100/90 hover:bg-amber-200/80 text-slate-900 border border-amber-300/70 px-3 py-1 rounded-full font-medium transition">
+          🍹 Bar & Aperitivi
+        </button>
+        <button type="button" onclick="quickAsk('Com è la spiaggia di ciottoli e quali escursioni ci sono?')" class="text-[11px] bg-blue-50 hover:bg-blue-100 text-[#1e3a8a] border border-blue-200/70 px-3 py-1 rounded-full font-medium transition">
+          🪨 Ciottoli & Escursioni
+        </button>
+        <button type="button" onclick="quickAsk('Quali sono regole e orari della piscina?')" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-3 py-1 rounded-full font-medium transition">
+          🏊 Piscina
+        </button>
       </div>
 
       <div id="chatMessages" class="flex-1 overflow-y-auto space-y-3 text-sm pr-1">
-        <div class="bg-emerald-50 text-emerald-950 p-3 rounded-2xl rounded-tl-none border border-emerald-100 max-w-[90%]">
+        <div class="bg-amber-50/95 text-slate-900 p-3.5 rounded-[22px] rounded-tl-md border border-amber-200 max-w-[90%]">
           👋 Benvenuto al <strong>Camping Coccorrocci</strong>!<br><br>
-          Chiedimi pure qualsiasi cosa su piscina, bar, alloggi o escursioni!
+          Tra mare, ciottoli e Ogliastra, chiedimi pure qualsiasi cosa su bar, piscina, alloggi, spiaggia o escursioni.
         </div>
       </div>
 
-      <div class="flex gap-2 mt-3 pt-2 border-t">
-        <input type="text" id="userInput" placeholder="Fai una domanda..." onkeydown="if(event.key==='Enter') sendMessage()" class="flex-1 p-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-emerald-600">
-        <button onclick="sendMessage()" class="bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-sm font-bold">
+      <div class="flex gap-2 mt-3 pt-3 border-t border-slate-200/80">
+        <input type="text" id="userInput" placeholder="Scrivi una domanda..." onkeydown="if(event.key==='Enter') sendMessage()" class="flex-1 px-3.5 py-2.5 rounded-full border border-slate-300 bg-white text-sm focus:outline-none focus:border-[#1e3a8a]">
+        <button type="button" onclick="sendMessage()" class="bg-[#1e3a8a] hover:bg-blue-900 text-amber-50 px-4 py-2.5 rounded-full text-sm font-semibold transition">
           Invia
         </button>
       </div>
     </div>
 
     <!-- PRENOTAZIONE TAVOLO BAR -->
-    <div class="bg-slate-900 text-white rounded-2xl p-4 shadow-md">
-      <h3 class="font-bold text-sm mb-1">🍹 Prenota un Tavolo o Aperitivo al Bar</h3>
-      <p class="text-xs text-slate-300 mb-3">Compila i dati per riservare il tuo posto al bar del campeggio.</p>
+    <div class="bg-[#172554] text-white rounded-[28px] p-5 shadow-md border border-blue-900">
+      <h3 class="font-bold text-sm text-amber-300 mb-1">🍹 Prenota un Tavolo o Aperitivo al Bar</h3>
+      <p class="text-xs text-blue-100/90 mb-3">Compila i dati per inviare la richiesta ai gestori del bar.</p>
 
-      <form id="bookingForm" class="space-y-2 text-slate-800 text-xs">
-        <input type="text" id="nome" placeholder="Il tuo Nome" required class="w-full p-2.5 rounded-lg border">
+      <form id="bookingForm" class="space-y-2.5 text-slate-900 text-xs">
+        <input type="text" id="nome" placeholder="Il tuo Nome" required class="w-full px-3.5 py-2.5 rounded-2xl border border-blue-200 bg-white">
         <div class="grid grid-cols-2 gap-2">
-          <input type="text" id="dataOra" placeholder="Data e Ora (es. Oggi 19:30)" required class="w-full p-2.5 rounded-lg border">
-          <input type="number" id="persone" placeholder="N° Persone" required class="w-full p-2.5 rounded-lg border">
+          <input type="text" id="dataOra" placeholder="Data e Ora (es. Oggi 19:30)" required class="w-full px-3.5 py-2.5 rounded-2xl border border-blue-200 bg-white">
+          <input type="number" id="persone" placeholder="N° Persone" min="1" required class="w-full px-3.5 py-2.5 rounded-2xl border border-blue-200 bg-white">
         </div>
-        <input type="tel" id="telefono" placeholder="Telefono di contatto" required class="w-full p-2.5 rounded-lg border">
+        <input type="tel" id="telefono" placeholder="Telefono di contatto" required class="w-full px-3.5 py-2.5 rounded-2xl border border-blue-200 bg-white">
 
-        <button type="submit" id="btnBooking" class="w-full bg-amber-400 font-bold text-amber-950 py-2.5 rounded-lg text-sm hover:bg-amber-500 transition-all">
+        <button type="submit" id="btnBooking" class="w-full bg-amber-400 hover:bg-amber-300 font-bold text-slate-950 py-2.5 rounded-full text-sm transition">
           📩 Invia Richiesta Prenotazione
         </button>
-        <p id="bookingStatus" class="text-xs text-emerald-400 font-semibold text-center mt-1 hidden"></p>
+        <p id="bookingStatus" class="text-xs text-amber-300 font-semibold text-center mt-1 hidden"></p>
       </form>
     </div>
 
   </main>
 
-  <footer class="bg-slate-900 text-slate-400 text-center p-3 text-xs">
+  <footer class="bg-[#172554] text-blue-200/80 text-center p-3 text-xs border-t border-blue-900">
     Camping Coccorrocci • Marina di Gairo
   </footer>
 
@@ -104,6 +137,12 @@
         .replace(/\n/g, "<br>");
     }
 
+    function quickAsk(questionText) {
+      const input = document.getElementById("userInput");
+      input.value = questionText;
+      sendMessage();
+    }
+
     async function sendMessage() {
       const input = document.getElementById("userInput");
       const text = input.value.trim();
@@ -112,7 +151,7 @@
       const chat = document.getElementById("chatMessages");
 
       const userDiv = document.createElement("div");
-      userDiv.className = "bg-slate-800 text-white p-3 rounded-2xl rounded-tr-none ml-auto max-w-[85%]";
+      userDiv.className = "bg-[#1e3a8a] text-amber-50 p-3 rounded-[22px] rounded-tr-md ml-auto max-w-[85%]";
       userDiv.textContent = text;
       chat.appendChild(userDiv);
 
@@ -120,7 +159,7 @@
       chat.scrollTop = chat.scrollHeight;
 
       const typingDiv = document.createElement("div");
-      typingDiv.className = "bg-emerald-50 text-emerald-800 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs italic border border-emerald-100";
+      typingDiv.className = "bg-amber-50/80 text-slate-700 p-3 rounded-[22px] rounded-tl-md max-w-[85%] text-xs italic border border-amber-200";
       typingDiv.textContent = "Risposta in corso...";
       chat.appendChild(typingDiv);
       chat.scrollTop = chat.scrollHeight;
@@ -138,13 +177,13 @@
 
         const data = await response.json();
         if (data.reply) {
-          typingDiv.className = "bg-emerald-50 text-emerald-950 p-3 rounded-2xl rounded-tl-none border border-emerald-100 max-w-[90%]";
+          typingDiv.className = "bg-amber-50/95 text-slate-900 p-3.5 rounded-[22px] rounded-tl-md border border-amber-200 max-w-[90%]";
           typingDiv.innerHTML = formatBotReply(data.reply);
         } else {
           throw new Error("Nessuna risposta");
         }
       } catch (err) {
-        typingDiv.className = "bg-red-50 text-red-900 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs";
+        typingDiv.className = "bg-red-50 text-red-900 p-3 rounded-[22px] rounded-tl-md max-w-[85%] text-xs border border-red-200";
         typingDiv.textContent = "Servizio temporaneamente non disponibile. Contatta la reception (+39 328 379 4773).";
       }
 
