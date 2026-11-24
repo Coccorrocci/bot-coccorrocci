@@ -3,137 +3,151 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bar Camping Coccorrocci | Web Concierge & Menù</title>
+  <title>Camping & Bar Coccorrocci | Concierge Web Chat</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="[suspicious link removed]">
 </head>
-<body class="bg-amber-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
 
   <!-- HEADER -->
-  <header class="bg-emerald-800 text-white p-4 shadow-md text-center sticky top-0 z-50">
-    <h1 class="text-xl font-bold tracking-wide">🍹 Bar Camping Coccorrocci</h1>
-    <p class="text-xs text-emerald-200 mt-1">Gestione Indipendente • Marina di Gairo, Ogliastra</p>
+  <header class="bg-emerald-900 text-white p-4 shadow-lg sticky top-0 z-50">
+    <div class="max-w-md mx-auto flex justify-between items-center">
+      <div>
+        <h1 class="text-lg font-bold tracking-wide">🏕️ Camping & Bar Coccorrocci</h1>
+        <p class="text-xs text-emerald-200">Concierge Digitale • Marina di Gairo</p>
+      </div>
+    </div>
   </header>
 
   <!-- CONTENUTO PRINCIPALE -->
-  <main class="max-w-md mx-auto p-4 w-full flex-1">
-    
-    <!-- CARD BENVENUTO E HIGHLIGHTS -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm border border-amber-200 mb-4">
-      <h2 class="text-lg font-bold text-emerald-900 mb-2">Benvenuti al Bar! 🍸</h2>
-      <p class="text-sm text-slate-600 mb-3">
-        Il punto di riferimento per le tue colazioni sul mare, gli snack freschi e gli aperitivi sardi al tramonto.
-      </p>
-      
-      <!-- SPECIALITÀ -->
-      <div class="grid grid-cols-2 gap-2 mt-3 text-xs">
-        <div class="bg-amber-100/70 p-3 rounded-xl border border-amber-200">
-          <span class="font-bold text-amber-900 block text-sm">🍸 Cocktail Mirtico</span>
-          Mirto sardo, Gin e Tonica. L'esclusiva della casa!
-        </div>
-        <div class="bg-amber-100/70 p-3 rounded-xl border border-amber-200">
-          <span class="font-bold text-amber-900 block text-sm">🧀 Tagliere Ogliastra</span>
-          Salumi e formaggi locali (€6 piccolo / €10 grande).
-        </div>
-      </div>
-    </div>
-
-    <!-- SEZIONE PRENOTAZIONE TAVOLO BAR -->
-    <div class="bg-emerald-900 text-white rounded-2xl p-5 shadow-sm mb-4">
-      <h3 class="font-bold text-base mb-1 flex items-center gap-2">
-        <i class="fa-solid fa-wine-glass"></i> Prenota un Tavolo o Aperitivo
-      </h3>
-      <p class="text-xs text-emerald-200 mb-3">Compila i dati e invia la richiesta direttamente ai gestori del bar!</p>
-      
-      <form id="bookingForm" class="space-y-3 text-slate-800 text-sm">
-        <input type="text" id="nome" placeholder="Il tuo Nome" required class="w-full p-2.5 rounded-lg border border-slate-300">
-        <div class="grid grid-cols-2 gap-2">
-          <input type="text" id="dataOra" placeholder="Data e Ora (es. Oggi 19:30)" required class="w-full p-2.5 rounded-lg border border-slate-300">
-          <input type="number" id="persone" placeholder="N° Persone" required class="w-full p-2.5 rounded-lg border border-slate-300">
-        </div>
-        <input type="tel" id="telefono" placeholder="Numero di Telefono" required class="w-full p-2.5 rounded-lg border border-slate-300">
-        
-        <button type="submit" class="w-full bg-amber-400 hover:bg-amber-500 font-bold text-amber-950 py-3 rounded-xl transition-all shadow-md">
-          📩 Invia Richiesta Prenotazione
-        </button>
-      </form>
-    </div>
+  <main class="max-w-md mx-auto p-4 w-full flex-1 space-y-4">
 
     <!-- PULSANTI RAPIDI -->
-    <div class="grid grid-cols-2 gap-3 mb-4 text-xs font-semibold">
-      <a href="[suspicious link removed]" target="_blank" class="bg-sky-500 text-white p-3 rounded-xl text-center shadow-sm flex items-center justify-center gap-2">
-        <i class="fa-brands fa-telegram text-base"></i> Apri Bot Telegram
-      </a>
-      <a href="tel:+393283794773" class="bg-slate-700 text-white p-3 rounded-xl text-center shadow-sm flex items-center justify-center gap-2">
-        <i class="fa-solid fa-phone text-base"></i> Chiamata Reception
-      </a>
+    <div class="grid grid-cols-2 gap-2 text-xs font-semibold">
+      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+        <span class="block text-slate-900 font-bold">🏊 Piscina</span>
+        <span class="text-slate-500 text-[10px]">09:00 - 17:30</span>
+      </div>
+      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+        <span class="block text-slate-900 font-bold">🍹 Bar Camping</span>
+        <span class="text-slate-500 text-[10px]">Gestione Indipendente</span>
+      </div>
+      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+        <span class="block text-slate-900 font-bold">🏕️ Alloggi & Tende</span>
+        <span class="text-slate-500 text-[10px]">Aperto tutto l'anno</span>
+      </div>
+      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+        <span class="block text-slate-900 font-bold">🍕 Ristorante</span>
+        <span class="text-slate-500 text-[10px]">I 4 Mori</span>
+      </div>
     </div>
 
-    <!-- AREA CHAT INTERATTIVA -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex flex-col h-80">
-      <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 pb-1 border-b">
-        💬 Assistente Virtuale Coccorrocci
+    <!-- CHAT INTERATTIVA COLLEGATA A RENDER (PYTHON) -->
+    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-4 flex flex-col h-[400px]">
+      <div class="flex items-center justify-between pb-2 border-b mb-2">
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span class="font-bold text-slate-800 text-sm">Concierge Digitale AI</span>
+        </div>
+        <span class="text-[11px] text-slate-400">Multilingua 🌍</span>
       </div>
-      
-      <div id="chatMessages" class="flex-1 overflow-y-auto space-y-2 text-sm pr-1">
-        <div class="bg-emerald-100 text-emerald-950 p-3 rounded-2xl rounded-tl-none max-w-[85%]">
-          Ciao! Sono l'assistente del Bar & Campeggio. Chiedimi pure orari, menù del bar, regole piscina o consigli sulle spiagge!
+
+      <!-- MESSAGGI CHAT -->
+      <div id="chatMessages" class="flex-1 overflow-y-auto space-y-3 text-sm pr-1">
+        <div class="bg-emerald-50 text-emerald-950 p-3 rounded-2xl rounded-tl-none border border-emerald-100 max-w-[90%]">
+          👋 Benvenuto al <strong>Camping & Bar Coccorrocci</strong>!<br><br>
+          Chiedimi pure qualsiasi cosa:<br>
+          • Regole e orari della piscina<br>
+          • Specialità del Bar, cocktail Mirtico e taglieri<br>
+          • Info alloggi, reception e campeggio<br>
+          • Spiaggia di ciottoli, kayak ed escursioni
         </div>
       </div>
 
+      <!-- INPUT UTENTE -->
       <div class="flex gap-2 mt-3 pt-2 border-t">
-        <input type="text" id="userInput" placeholder="Fai una domanda..." class="flex-1 p-2 rounded-xl border text-sm">
-        <button onclick="sendMessage()" class="bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-bold">
+        <input type="text" id="userInput" placeholder="Fai una domanda..." onkeypress="if(event.key==='Enter') sendMessage()" class="flex-1 p-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-emerald-600">
+        <button onclick="sendMessage()" class="bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-sm font-bold">
           Invia
         </button>
       </div>
     </div>
 
+    <!-- PRENOTAZIONE TAVOLO BAR -->
+    <div class="bg-slate-900 text-white rounded-2xl p-4 shadow-md">
+      <h3 class="font-bold text-sm mb-1">🍹 Prenota un Tavolo o Aperitivo al Bar</h3>
+      <p class="text-xs text-slate-300 mb-3">Invia la richiesta ai titolari del Bar Camping Coccorrocci.</p>
+      
+      <form id="bookingForm" class="space-y-2 text-slate-800 text-xs">
+        <input type="text" id="nome" placeholder="Il tuo Nome" required class="w-full p-2.5 rounded-lg border">
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" id="dataOra" placeholder="Data e Ora (es. Oggi 19:30)" required class="w-full p-2.5 rounded-lg border">
+          <input type="number" id="persone" placeholder="N° Persone" required class="w-full p-2.5 rounded-lg border">
+        </div>
+        <input type="tel" id="telefono" placeholder="Telefono di contatto" required class="w-full p-2.5 rounded-lg border">
+        
+        <button type="submit" class="w-full bg-amber-400 font-bold text-amber-950 py-2.5 rounded-lg text-sm">
+          📩 Invia Richiesta al Bar
+        </button>
+      </form>
+    </div>
+
   </main>
 
-  <!-- FOOTER -->
   <footer class="bg-slate-900 text-slate-400 text-center p-3 text-xs">
-    Bar Camping Coccorrocci • Gestione Indipendente
+    Camping Coccorrocci & Bar Camping Coccorrocci • Marina di Gairo
   </footer>
 
   <script>
-    // Invia la prenotazione direttamente via WhatsApp / Telegram
-    document.getElementById('bookingForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const nome = document.getElementById('nome').value;
-      const dataOra = document.getElementById('dataOra').value;
-      const persone = document.getElementById('persone').value;
-      const tel = document.getElementById('telefono').value;
+    // ⚠️ SOSTITUISCI CON IL TUO NOME SERVIZIO RENDER:
+    const RENDER_BACKEND_URL = "[suspicious link removed]";
 
-      const testo = `Richiesta Prenotazione Tavolo Bar:\n👤 Nome: ${nome}\n📅 Data: ${dataOra}\n👥 Persone: ${persone}\n📞 Tel: ${tel}`;
-      window.open(`[suspicious link removed]{encodeURIComponent(testo)}`, '_blank');
-    });
-
-    function sendMessage() {
+    async function sendMessage() {
       const input = document.getElementById('userInput');
       const text = input.value.trim();
       if (!text) return;
 
       const chat = document.getElementById('chatMessages');
-      
-      // Messaggio utente
+
       const userDiv = document.createElement('div');
-      userDiv.className = 'bg-slate-100 text-slate-900 p-3 rounded-2xl rounded-tr-none ml-auto max-w-[85%]';
+      userDiv.className = 'bg-slate-800 text-white p-3 rounded-2xl rounded-tr-none ml-auto max-w-[85%]';
       userDiv.textContent = text;
       chat.appendChild(userDiv);
-      
+
       input.value = '';
       chat.scrollTop = chat.scrollHeight;
 
-      // Risposta automatica di cortesia
-      setTimeout(() => {
-        const botDiv = document.createElement('div');
-        botDiv.className = 'bg-emerald-100 text-emerald-950 p-3 rounded-2xl rounded-tl-none max-w-[85%]';
-        botDiv.textContent = "Grazie! Puoi anche contattare direttamente il bar per informazioni immediate o consultare le sezioni qui sopra.";
-        chat.appendChild(botDiv);
-        chat.scrollTop = chat.scrollHeight;
-      }, 700);
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'bg-emerald-50 text-emerald-800 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs italic border border-emerald-100';
+      typingDiv.textContent = 'Risposta in corso...';
+      chat.appendChild(typingDiv);
+      chat.scrollTop = chat.scrollHeight;
+
+      try {
+        const response = await fetch(RENDER_BACKEND_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+
+        const data = await response.json();
+        if (data.reply) {
+          typingDiv.className = 'bg-emerald-50 text-emerald-950 p-3 rounded-2xl rounded-tl-none border border-emerald-100 max-w-[90%]';
+          typingDiv.innerHTML = data.reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        } else {
+          throw new Error('Nessuna risposta');
+        }
+      } catch (err) {
+        typingDiv.className = 'bg-red-50 text-red-900 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs';
+        typingDiv.textContent = "Servizio temporaneamente non disponibile. Contatta la reception (+39 328 379 4773).";
+      }
+
+      chat.scrollTop = chat.scrollHeight;
     }
+
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Richiesta inviata ai gestori del Bar!');
+    });
   </script>
 
 </body>
