@@ -17,6 +17,9 @@ from google.genai import types
 logging.basicConfig(level=logging.INFO)
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OWNER_CHAT_ID = os.getenv("OWNER_CHAT_ID")
+
 
 SYSTEM_PROMPT = """
 Sei l'Assistente Virtuale e Concierge Digitale multilingua del Camping Coccorrocci (Marina di Gairo, Ogliastra, Sardegna).
@@ -25,7 +28,9 @@ Il tuo obiettivo è assistere gli ospiti e i turisti fornendo informazioni detta
 REGOLE ESSENZIALI:
 1. Rispondi SEMPRE nella stessa lingua utilizzata dall'utente (Italiano, Inglese, Tedesco, Francese, Olandese, ecc.)
 2. Tono di voce: Accogliente, solare, professionale ed entusiasta delle bellezze dell'Ogliastra.
-3. Suggerisci sempre una piacevole sosta o un aperitivo al Bar del campeggio quando l'utente chiede informazioni su relax, dopo-trekking o colazioni.
+3. Rispondi in modo diretto alle domande sul campeggio. Suggerisci il Bar Camping Coccorrocci in modo spontaneo e contestuale (es. se chiedono di colazione, 
+   aperitivi, relax o cosa fare a fine giornata/dopo un trekking). Evita di menzionare il bar se la domanda riguarda solo aspetti pratici o tecnici del campeggio 
+   (es. orari piscina, check-in, regole)..
 4. Per prenotazioni di alloggi o piazzole, invita a usare il comando /prenota oppure a contattare direttamente la reception.
 5. Contatti ufficiali reception:
   - Telefono / WhatsApp : +39 328 379 4773 / +39 379 1777 3509
@@ -90,6 +95,7 @@ Il bar si chiama **Bar Camping Coccorrocci**.
 """
 
 DATE, ALLOGGIO, OSPITI, CONTATTO = range(4)
+BAR_DATA, BAR_PERSONE, BAR_CONTATTO = range(4, 7)
 
 
 async def healthcheck(request):
@@ -114,6 +120,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "📌 **Comandi rapidi:**\n"
         "👉 /bar - Scopri il menù del bar, il cocktail Mirtico e il tagliere sardo\n"
         "👉 /prenota - Invia una richiesta di prenotazione per piazzole o alloggi\n"
+        "👉 /prenota_bar - Prenota un tavolo o un aperitivo al Bar\n"
         "👉 /contatti - Numeri di telefono e email della reception\n\n"
         "💬 *Chiedimi pure qualsiasi cosa in Italiano, English, Deutsch, Français, ecc.!*"
     )
@@ -122,7 +129,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def bar_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     bar_text = (
-        "🍹 **BAR CAMPING COCCORROCCI** (Gestione Interna)\n\n"
+        "🍹 **BAR CAMPING COCCORROCCI** (Gestione Indipendente)\n\n"
         "🕑 **Orari:** 07:00 - 24:00 (Estate) / 07:00 - 20:00 (Inverno)\n\n"
         "🌟 **LE NOSTRE SPECIALITA' DA NON PERDERE**\n"
         "🍸 **Cocktail Mirtico:** L'esclusivo cocktail della casa a base di Mirto sardo, Gin, Succo di Lime, foglie di menta e Tonica.\n"
@@ -197,6 +204,74 @@ async def prenota_cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Richiesta di prenotazione annullata.")
     return ConversationHandler.END
 
+async def prenota_tavolo_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "🍹 *Prenotazione Tavolo / Aperitivo al Bar Camping Coccorrocci*\n\n"
+        "Per quale *giorno e ora* vorresti prenotare? (es. Sabato 18 Luglio alle 19:30)",
+        parse_mode="Markdown",
+    )
+    return BAR_DATA
+
+
+async def prenota_tavolo_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data["date"] = update.message.text
+    await update.message.reply_text(
+        "👥 Per *quante persone*?",
+        parse_mode="Markdown",
+    )
+    return BAR_PERSONE
+
+
+async def prenota_tavolo_persone(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data["ospiti"] = update.message.text
+    await update.message.reply_text(
+        "📞 Lasciaci il tuo *Nome e Recapito* (Telefono o WhatsApp):",
+        parse_mode="Markdown",
+    )
+    return BAR_CONTATTO
+
+async def prenota_tavolo_fine(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data["contatto"] = update.message.text
+
+    nome_cliente = (
+        context.user_data.get("name")
+        or update.effective_user.first_name
+        or "Non indicato"
+    )
+    data_ora = context.user_data.get("date") or "Non indicata"
+    persone = context.user_data.get("ospiti") or "Non indicato"
+    contatto = context.user_data.get("contatto") or "Non indicato"
+
+    riepilogo = (
+        "🥂 *Richiesta Prenotazione Tavolo inviata!*\n\n"
+        f"📅 *Data e Ora:* {data_ora}\n"
+        f"👥 *Persone:* {persone}\n"
+        f"📞 *Recapito:* {contatto}\n\n"
+        "I gestori del Bar Camping Coccorrocci verificheranno la disponibilità "
+        "e ti daranno conferma al più presto!"
+    )
+    await update.message.reply_text(riepilogo, parse_mode="Markdown")
+
+    if OWNER_CHAT_ID:
+        notifica_gestore = (
+            "🍹 *NUOVA PRENOTAZIONE TAVOLO BAR!*\n\n"
+            f"👤 *Cliente:* {nome_cliente}\n"
+            f"📅 *Data e Ora:* {data_ora}\n"
+            f"👥 *Persone:* {persone}\n"
+            f"📞 *Recapito:* {contatto}"
+        )
+        try:
+            await context.bot.send_message(
+                chat_id=int(OWNER_CHAT_ID),
+                text=notifica_gestore,
+                parse_mode="Markdown",
+            )
+        except Exception as e:
+            print(f"❌ Errore invio notifica gestore: {e}", flush=True)
+
+    context.user_data.clear()
+    return ConversationHandler.END
+
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text
@@ -241,11 +316,24 @@ async def main():
         fallbacks=[CommandHandler("cancel", prenota_cancel)],
     )
 
+    bar_booking_handler = ConversationHandler(
+        entry_points=[CommandHandler("prenota_bar", prenota_tavolo_start)],
+        states={
+            BAR_DATA: [MessageHandler(filters.TEXT & ~filters.COMMAND, prenota_tavolo_data)],
+            BAR_PERSONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, prenota_tavolo_persone)],
+            BAR_CONTATTO: [MessageHandler(filters.TEXT & ~filters.COMMAND, prenota_tavolo_fine)],
+        },
+        fallbacks=[CommandHandler("cancel", prenota_cancel)],
+    )
+
+
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("bar", bar_info))
     app.add_handler(CommandHandler("contatti", contatti))
     app.add_handler(booking_handler)
+    app.add_handler(bar_booking_handler)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+  
 
     print("🟢 BOT IN ASCOLTO!", flush=True)
     await app.initialize()
