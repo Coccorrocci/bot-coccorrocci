@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Camping & Bar Coccorrocci | Concierge Web Chat</title>
+  <title>Camping Coccorrocci | Concierge & Chat</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
@@ -12,7 +12,7 @@
   <header class="bg-emerald-900 text-white p-4 shadow-lg sticky top-0 z-50">
     <div class="max-w-md mx-auto flex justify-between items-center">
       <div>
-        <h1 class="text-lg font-bold tracking-wide">🏕️ Camping & Bar Coccorrocci</h1>
+        <h1 class="text-lg font-bold tracking-wide">🏕️ Camping Coccorrocci</h1>
         <p class="text-xs text-emerald-200">Concierge Digitale • Marina di Gairo</p>
       </div>
     </div>
@@ -28,7 +28,7 @@
         <span class="text-slate-500 text-[10px]">09:00 - 17:30</span>
       </div>
       <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-        <span class="block text-slate-900 font-bold">🍹 Bar Camping</span>
+        <span class="block text-slate-900 font-bold">🍹 Bar</span>
         <span class="text-slate-500 text-[10px]">Gestione Indipendente</span>
       </div>
       <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
@@ -41,8 +41,8 @@
       </div>
     </div>
 
-    <!-- CHAT INTERATTIVA COLLEGATA A RENDER (PYTHON) -->
-    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-4 flex flex-col h-[400px]">
+    <!-- CHAT INTERATTIVA -->
+    <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-4 flex flex-col h-[380px]">
       <div class="flex items-center justify-between pb-2 border-b mb-2">
         <div class="flex items-center gap-2">
           <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
@@ -51,19 +51,13 @@
         <span class="text-[11px] text-slate-400">Multilingua 🌍</span>
       </div>
 
-      <!-- MESSAGGI CHAT -->
       <div id="chatMessages" class="flex-1 overflow-y-auto space-y-3 text-sm pr-1">
         <div class="bg-emerald-50 text-emerald-950 p-3 rounded-2xl rounded-tl-none border border-emerald-100 max-w-[90%]">
-          👋 Benvenuto al <strong>Camping & Bar Coccorrocci</strong>!<br><br>
-          Chiedimi pure qualsiasi cosa:<br>
-- Regole e orari della piscina<br>
-- Specialità del Bar, cocktail Mirtico e taglieri<br>
-- Info alloggi, reception e campeggio<br>
-- Spiaggia di ciottoli, kayak ed escursioni
+          👋 Benvenuto al <strong>Camping Coccorrocci</strong>!<br><br>
+          Chiedimi pure qualsiasi cosa su piscina, bar, alloggi o escursioni!
         </div>
       </div>
 
-      <!-- INPUT UTENTE -->
       <div class="flex gap-2 mt-3 pt-2 border-t">
         <input type="text" id="userInput" placeholder="Fai una domanda..." onkeydown="if(event.key==='Enter') sendMessage()" class="flex-1 p-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-emerald-600">
         <button onclick="sendMessage()" class="bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-sm font-bold">
@@ -75,7 +69,7 @@
     <!-- PRENOTAZIONE TAVOLO BAR -->
     <div class="bg-slate-900 text-white rounded-2xl p-4 shadow-md">
       <h3 class="font-bold text-sm mb-1">🍹 Prenota un Tavolo o Aperitivo al Bar</h3>
-      <p class="text-xs text-slate-300 mb-3">Invia la richiesta ai titolari del Bar Camping Coccorrocci.</p>
+      <p class="text-xs text-slate-300 mb-3">Compila i dati per riservare il tuo posto al bar del campeggio.</p>
 
       <form id="bookingForm" class="space-y-2 text-slate-800 text-xs">
         <input type="text" id="nome" placeholder="Il tuo Nome" required class="w-full p-2.5 rounded-lg border">
@@ -85,21 +79,21 @@
         </div>
         <input type="tel" id="telefono" placeholder="Telefono di contatto" required class="w-full p-2.5 rounded-lg border">
 
-        <button type="submit" class="w-full bg-amber-400 font-bold text-amber-950 py-2.5 rounded-lg text-sm">
-          📩 Invia Richiesta al Bar
+        <button type="submit" id="btnBooking" class="w-full bg-amber-400 font-bold text-amber-950 py-2.5 rounded-lg text-sm hover:bg-amber-500 transition-all">
+          📩 Invia Richiesta Prenotazione
         </button>
+        <p id="bookingStatus" class="text-xs text-emerald-400 font-semibold text-center mt-1 hidden"></p>
       </form>
     </div>
 
   </main>
 
   <footer class="bg-slate-900 text-slate-400 text-center p-3 text-xs">
-    Camping Coccorrocci & Bar Camping Coccorrocci • Marina di Gairo
+    Camping Coccorrocci • Marina di Gairo
   </footer>
 
   <script>
-    // Sostituisci con l'URL del tuo servizio Render + /api/chat
-    const RENDER_BACKEND_URL = "https://bot-coccorrocci.onrender.com/api/chat";
+    const RENDER_BASE_URL = "https://bot-coccorrocci.onrender.com";
 
     function formatBotReply(text) {
       return text
@@ -132,7 +126,7 @@
       chat.scrollTop = chat.scrollHeight;
 
       try {
-        const response = await fetch(RENDER_BACKEND_URL, {
+        const response = await fetch(`${RENDER_BASE_URL}/api/chat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: text })
@@ -157,9 +151,44 @@
       chat.scrollTop = chat.scrollHeight;
     }
 
-    document.getElementById("bookingForm").addEventListener("submit", function(e) {
+    document.getElementById("bookingForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-      alert("Richiesta inviata ai gestori del Bar!");
+      const btn = document.getElementById("btnBooking");
+      const status = document.getElementById("bookingStatus");
+
+      btn.disabled = true;
+      btn.textContent = "Invio in corso...";
+
+      const payload = {
+        nome: document.getElementById("nome").value,
+        dataOra: document.getElementById("dataOra").value,
+        persone: document.getElementById("persone").value,
+        telefono: document.getElementById("telefono").value
+      };
+
+      try {
+        const res = await fetch(`${RENDER_BASE_URL}/api/prenota_tavolo`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          throw new Error("Errore HTTP " + res.status);
+        }
+        const resData = await res.json();
+        if (resData.status === "ok") {
+          status.textContent = "✅ Richiesta inviata! Ti confermeremo la prenotazione a breve sul tuo telefono.";
+          status.classList.remove("hidden");
+          document.getElementById("bookingForm").reset();
+        } else {
+          throw new Error("Errore invio");
+        }
+      } catch (err) {
+        alert("Si è verificato un errore durante l'invio. Puoi contattare direttamente la reception (+39 328 379 4773).");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "📩 Invia Richiesta Prenotazione";
+      }
     });
   </script>
 
