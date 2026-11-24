@@ -21,25 +21,26 @@ logging.basicConfig(level=logging.INFO)
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 OWNER_CHAT_ID = os.getenv("OWNER_CHAT_ID", "931253377")
+tg_bot = None
 
 SYSTEM_PROMPT = """
 Sei l'Assistente Virtuale e Concierge Digitale multilingua del "Camping Coccorrocci" (Marina di Gairo, Ogliastra, Sardegna).
-Il tuo obiettivo è assistere ospiti e turisti fornendo informazioni dettagliate, accurate e cortesi su tutti i servizi della struttura, gli alloggi, il territorio e le attività.
+Il tuo obiettivo è assistere ospiti e turisti fornendo informazioni dettagliate, accurate e cortesi su tutti i servizi della struttura, gli alloggi, il bar ed il territorio.
 
 STRUTTURA E GESTIONE DEL BAR:
-- Il bar si chiama "Bar Camping Coccorrocci" ed è a GESTIONE ESTERNA E INDIPENDENTE (gestito direttamente dai titolari, la proprietaria e il suo compagno).
+- Il bar del campeggio è a GESTIONE ESTERNA E INDIPENDENTE (gestito direttamente dai titolari, la proprietaria e il suo compagno).
 - È il punto di riferimento per colazioni, snack, aperitivi e relax.
-- Per prenotazioni di tavoli, aperitivi, taglieri ed eventi al bar, invita gli utenti a usare il comando /prenota_tavolo.
+- Per prenotazioni di tavoli, aperitivi, taglieri ed eventi al bar, invita gli utenti a usare il comando /prenota_tavolo o il modulo presente nella Web Chat.
 
 REGOLE ESSENZIALI DI RISPOSTA:
 1. Rispondi SEMPRE nella stessa lingua utilizzata dall'utente (Italiano, Inglese, Tedesco, Francese, Olandese, ecc.).
 2. Tono di voce: Accogliente, solare, professionale ed estremamente utile per chi è in vacanza.
 3. Rispondi prima di tutto in modo CHIARO e DIRETTO alla domanda del cliente.
-4. Suggerisci il Bar Camping Coccorrocci in modo naturale e contestuale (es. se l'utente chiede di colazione, aperitivi, relax serale o dopo un trekking). Evita di menzionare il bar se la domanda riguarda solo aspetti pratici del campeggio (es. orari piscina, differenziata, regole alloggi).
+4. Suggerisci il bar del campeggio in modo naturale e contestuale (es. se l'utente chiede di colazione, aperitivi, relax serale o dopo un trekking). Evita di menzionare il bar se la domanda riguarda solo aspetti pratici del campeggio (es. orari piscina, differenziata, regole alloggi).
 5. Per prenotazioni di alloggi e piazzole del campeggio, indica chiaramente di contattare la reception del campeggio (+39 328 379 4773 / info@coccorroccicamping.com) oppure il comando /prenota.
 
 BASE DI CONOSCENZA DETTAGLIATA:
-☕ BAR CAMPING COCCORROCCI (GESTIONE INDIPENDENTE):
+☕ BAR (GESTIONE INDIPENDENTE):
 - Orari: dalle 07:00 alle 24:00 (alta stagione estiva) / dalle 07:00 alle 20:00-21:00 (periodo invernale).
 - SPECIALITÀ E HIGHLIGHTS:
   * Cocktail "Mirtico": Esclusiva della casa a base di Mirto sardo, Gin e Tonica.
@@ -108,14 +109,46 @@ async def handle_web_chat(request):
         return web.json_response({"reply": "Errore nella richiesta."}, status=400, headers=headers)
 
 
+# Endpoint per ricevere le prenotazioni dalla Web Chat ed inviarle su Telegram
+async def handle_web_booking(request):
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+    }
+    if request.method == "OPTIONS":
+        return web.Response(status=200, headers=headers)
+    try:
+        data = await request.json()
+        nome = data.get("nome", "Cliente Web")
+        data_ora = data.get("dataOra", "-")
+        persone = data.get("persone", "-")
+        telefono = data.get("telefono", "-")
+        if tg_bot and OWNER_CHAT_ID:
+            notifica = (
+                "🍹 *NUOVA PRENOTAZIONE TAVOLO BAR (da Web Chat)!*\n\n"
+                f"👤 *Cliente:* {nome}\n"
+                f"📅 *Data e Ora:* {data_ora}\n"
+                f"👥 *Persone:* {persone}\n"
+                f"📞 *Recapito:* {telefono}"
+            )
+            target_id = int(OWNER_CHAT_ID) if str(OWNER_CHAT_ID).isdigit() else OWNER_CHAT_ID
+            await tg_bot.send_message(chat_id=target_id, text=notifica, parse_mode="Markdown")
+            print(f"✅ Notifica prenotazione inviata su Telegram a {target_id}", flush=True)
+        return web.json_response({"status": "ok", "message": "Richiesta inviata con successo!"}, headers=headers)
+    except Exception as e:
+        print(f"❌ Errore invio prenotazione web: {e}", flush=True)
+        return web.json_response({"status": "error", "message": str(e)}, status=400, headers=headers)
+
+
 T_DATA, T_PERSONE, T_CONTATTO = range(3)
 C_DATE, C_ALLOGGIO, C_OSPITI, C_CONTATTO = range(3, 7)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     welcome_text = (
-        "👋 *Benvenuto al Camping & Bar Coccorrocci!*\n\n"
-        "Sono il tuo Concierge Digitale. Posso darti informazioni su alloggi, piscina, percorsi trekking e le specialità del Bar Camping Coccorrocci!\n\n"
+        "👋 *Benvenuto al Camping Coccorrocci!*\n\n"
+        "Sono il tuo Concierge Digitale. Posso darti informazioni su alloggi, piscina, percorsi trekking e il bar del campeggio!\n\n"
         "📌 *Comandi rapidi:*\n"
         "👉 /bar - Menù e specialità del Bar\n"
         "👉 /prenota_tavolo - Prenota un tavolo al Bar\n"
@@ -142,30 +175,27 @@ async def bar_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def contatti(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = (
         "📞 *CONTATTI UTILI:*\n\n"
-        "🍹 *Bar Camping Coccorrocci:* Usa /prenota_tavolo\n"
-        "🏕️ *Reception Campeggio:* +39 328 379 4773 / +39 379 1777 3509 | info@coccorroccicamping.com\n"
+        "🍹 *Bar Campeggio:* Usa /prenota_tavolo\n"
+        "🏕️ *Reception Campeggio:* +39 328 379 4773 / +39 379 177 3509 | info@coccorroccicamping.com\n"
         "🍕 *Ristorante I 4 Mori:* https://www.menudigitale.io/i4mori-ristorante-pizzeria"
     )
     await update.message.reply_text(text, parse_mode="Markdown")
 
 
 async def prenota_tavolo_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "🍹 *Prenotazione Tavolo Bar*\nIndica la *data e l'orario* (es. Oggi 19:30):",
-        parse_mode="Markdown",
-    )
+    await update.message.reply_text("🍹 Prenotazione Tavolo Bar\nIndica la data e l'orario (es. Oggi 19:30):")
     return T_DATA
 
 
 async def prenota_tavolo_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["tavolo_data"] = update.message.text
-    await update.message.reply_text("👥 Per quante *persone*?", parse_mode="Markdown")
+    await update.message.reply_text("👥 Per quante persone?")
     return T_PERSONE
 
 
 async def prenota_tavolo_persone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["tavolo_persone"] = update.message.text
-    await update.message.reply_text("📞 Lasciaci il tuo *Nome e Recapito Telefonico*:", parse_mode="Markdown")
+    await update.message.reply_text("📞 Lasciaci il tuo Nome e Recapito Telefonico:")
     return T_CONTATTO
 
 
@@ -178,7 +208,7 @@ async def prenota_tavolo_fine(update: Update, context: ContextTypes.DEFAULT_TYPE
     await update.message.reply_text(f"🥂 Richiesta inviata! Ti confermeremo a breve a questo recapito: {contatto}")
     if OWNER_CHAT_ID:
         notifica = (
-            "🍹 *NUOVA PRENOTAZIONE TAVOLO BAR!*\n\n"
+            "🍹 *NUOVA PRENOTAZIONE TAVOLO BAR (da Telegram)!*\n\n"
             f"👤 *Cliente:* {nome_cliente}\n"
             f"📅 *Data/Ora:* {data_ora}\n"
             f"👥 *Persone:* {persone}\n"
@@ -193,7 +223,7 @@ async def prenota_tavolo_fine(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 
 async def prenota_camp_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("🏕️ *Richiesta Alloggio / Piazzola*\nIndica le date (es. 15-22 Luglio):", parse_mode="Markdown")
+    await update.message.reply_text("🏕️ Richiesta Alloggio / Piazzola\nIndica le date (es. 15-22 Luglio):")
     return C_DATE
 
 
@@ -232,9 +262,15 @@ async def handle_tg_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def on_startup(application):
+    global tg_bot
+    tg_bot = application.bot
+
     app_web = web.Application()
     app_web.router.add_post("/api/chat", handle_web_chat)
     app_web.router.add_options("/api/chat", handle_web_chat)
+    app_web.router.add_post("/api/prenota_tavolo", handle_web_booking)
+    app_web.router.add_options("/api/prenota_tavolo", handle_web_booking)
+
     port = int(os.getenv("PORT", 10000))
     runner = web.AppRunner(app_web)
     await runner.setup()
@@ -297,4 +333,4 @@ def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main()) if False else main()
+    main()
