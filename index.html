@@ -56,16 +56,16 @@
         <div class="bg-emerald-50 text-emerald-950 p-3 rounded-2xl rounded-tl-none border border-emerald-100 max-w-[90%]">
           👋 Benvenuto al <strong>Camping & Bar Coccorrocci</strong>!<br><br>
           Chiedimi pure qualsiasi cosa:<br>
-          • Regole e orari della piscina<br>
-          • Specialità del Bar, cocktail Mirtico e taglieri<br>
-          • Info alloggi, reception e campeggio<br>
-          • Spiaggia di ciottoli, kayak ed escursioni
+- Regole e orari della piscina<br>
+- Specialità del Bar, cocktail Mirtico e taglieri<br>
+- Info alloggi, reception e campeggio<br>
+- Spiaggia di ciottoli, kayak ed escursioni
         </div>
       </div>
 
       <!-- INPUT UTENTE -->
       <div class="flex gap-2 mt-3 pt-2 border-t">
-        <input type="text" id="userInput" placeholder="Fai una domanda..." onkeypress="if(event.key==='Enter') sendMessage()" class="flex-1 p-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-emerald-600">
+        <input type="text" id="userInput" placeholder="Fai una domanda..." onkeydown="if(event.key==='Enter') sendMessage()" class="flex-1 p-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-emerald-600">
         <button onclick="sendMessage()" class="bg-emerald-800 text-white px-4 py-2.5 rounded-xl text-sm font-bold">
           Invia
         </button>
@@ -76,7 +76,7 @@
     <div class="bg-slate-900 text-white rounded-2xl p-4 shadow-md">
       <h3 class="font-bold text-sm mb-1">🍹 Prenota un Tavolo o Aperitivo al Bar</h3>
       <p class="text-xs text-slate-300 mb-3">Invia la richiesta ai titolari del Bar Camping Coccorrocci.</p>
-      
+
       <form id="bookingForm" class="space-y-2 text-slate-800 text-xs">
         <input type="text" id="nome" placeholder="Il tuo Nome" required class="w-full p-2.5 rounded-lg border">
         <div class="grid grid-cols-2 gap-2">
@@ -84,7 +84,7 @@
           <input type="number" id="persone" placeholder="N° Persone" required class="w-full p-2.5 rounded-lg border">
         </div>
         <input type="tel" id="telefono" placeholder="Telefono di contatto" required class="w-full p-2.5 rounded-lg border">
-        
+
         <button type="submit" class="w-full bg-amber-400 font-bold text-amber-950 py-2.5 rounded-lg text-sm">
           📩 Invia Richiesta al Bar
         </button>
@@ -98,55 +98,68 @@
   </footer>
 
   <script>
-    // ⚠️ SOSTITUISCI CON IL TUO NOME SERVIZIO RENDER:
-    const RENDER_BACKEND_URL = "[suspicious link removed]";
+    // Sostituisci con l'URL del tuo servizio Render + /api/chat
+    const RENDER_BACKEND_URL = "https://INCOLLA_QUI_IL_TUO_URL_RENDER.onrender.com/api/chat";
+
+    function formatBotReply(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\n/g, "<br>");
+    }
 
     async function sendMessage() {
-      const input = document.getElementById('userInput');
+      const input = document.getElementById("userInput");
       const text = input.value.trim();
       if (!text) return;
 
-      const chat = document.getElementById('chatMessages');
+      const chat = document.getElementById("chatMessages");
 
-      const userDiv = document.createElement('div');
-      userDiv.className = 'bg-slate-800 text-white p-3 rounded-2xl rounded-tr-none ml-auto max-w-[85%]';
+      const userDiv = document.createElement("div");
+      userDiv.className = "bg-slate-800 text-white p-3 rounded-2xl rounded-tr-none ml-auto max-w-[85%]";
       userDiv.textContent = text;
       chat.appendChild(userDiv);
 
-      input.value = '';
+      input.value = "";
       chat.scrollTop = chat.scrollHeight;
 
-      const typingDiv = document.createElement('div');
-      typingDiv.className = 'bg-emerald-50 text-emerald-800 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs italic border border-emerald-100';
-      typingDiv.textContent = 'Risposta in corso...';
+      const typingDiv = document.createElement("div");
+      typingDiv.className = "bg-emerald-50 text-emerald-800 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs italic border border-emerald-100";
+      typingDiv.textContent = "Risposta in corso...";
       chat.appendChild(typingDiv);
       chat.scrollTop = chat.scrollHeight;
 
       try {
         const response = await fetch(RENDER_BACKEND_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: text })
         });
 
+        if (!response.ok) {
+          throw new Error("Errore HTTP " + response.status);
+        }
+
         const data = await response.json();
         if (data.reply) {
-          typingDiv.className = 'bg-emerald-50 text-emerald-950 p-3 rounded-2xl rounded-tl-none border border-emerald-100 max-w-[90%]';
-          typingDiv.innerHTML = data.reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+          typingDiv.className = "bg-emerald-50 text-emerald-950 p-3 rounded-2xl rounded-tl-none border border-emerald-100 max-w-[90%]";
+          typingDiv.innerHTML = formatBotReply(data.reply);
         } else {
-          throw new Error('Nessuna risposta');
+          throw new Error("Nessuna risposta");
         }
       } catch (err) {
-        typingDiv.className = 'bg-red-50 text-red-900 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs';
+        typingDiv.className = "bg-red-50 text-red-900 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-xs";
         typingDiv.textContent = "Servizio temporaneamente non disponibile. Contatta la reception (+39 328 379 4773).";
       }
 
       chat.scrollTop = chat.scrollHeight;
     }
 
-    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    document.getElementById("bookingForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      alert('Richiesta inviata ai gestori del Bar!');
+      alert("Richiesta inviata ai gestori del Bar!");
     });
   </script>
 
