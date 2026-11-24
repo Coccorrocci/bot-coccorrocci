@@ -5,7 +5,6 @@ import os
 from aiohttp import web
 from google import genai
 from google.genai import types
-import nest_asyncio
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -16,7 +15,7 @@ from telegram.ext import (
     filters,
 )
 
-nest_asyncio.apply()
+logging.basicConfig(level=logging.INFO)
 
 # --- VARIABILI D'AMBIENTE (RENDER) ---
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -30,7 +29,7 @@ Il tuo obiettivo è assistere ospiti e turisti fornendo informazioni dettagliate
 STRUTTURA E GESTIONE DEL BAR:
 - Il bar si chiama "Bar Camping Coccorrocci" ed è a GESTIONE ESTERNA E INDIPENDENTE (gestito direttamente dai titolari, la proprietaria e il suo compagno).
 - È il punto di riferimento per colazioni, snack, aperitivi e relax.
-- Per prenotazioni di tavoli, aperitivi, taglieri ed eventi al bar, invita gli utenti a usare il comando /prenota_tavolo o l'apposito modulo.
+- Per prenotazioni di tavoli, aperitivi, taglieri ed eventi al bar, invita gli utenti a usare il comando /prenota_tavolo.
 
 REGOLE ESSENZIALI DI RISPOSTA:
 1. Rispondi SEMPRE nella stessa lingua utilizzata dall'utente (Italiano, Inglese, Tedesco, Francese, Olandese, ecc.).
@@ -74,7 +73,7 @@ BASE DI CONOSCENZA DETTAGLIATA:
 def ask_gemini(user_text: str) -> str:
     api_key = os.getenv("GEMINI_API_KEY") or GEMINI_API_KEY
     if not api_key:
-        return "⚠️ Configurazione in corso. Contatta la reception al +39 328 379 4773."
+        return "⚠️ Servizio in fase di configurazione. Contatta la reception al +39 328 379 4773."
     try:
         local_client = genai.Client(api_key=api_key)
         response = local_client.models.generate_content(
@@ -86,11 +85,10 @@ def ask_gemini(user_text: str) -> str:
         )
         return response.text or "Non sono riuscito a generare una risposta."
     except Exception as e:
-        print(f"Errore Gemini: {e}")
-        return "Si è verificato un errore temporaneo. Contatta la reception o il bar."
+        print(f"Errore Gemini: {e}", flush=True)
+        return "Si è verificato un errore temporaneo. Puoi contattare la reception o il bar."
 
 
-# Endpoint API per la Web Chat
 async def handle_web_chat(request):
     headers = {
         "Access-Control-Allow-Origin": "*",
@@ -110,7 +108,6 @@ async def handle_web_chat(request):
         return web.json_response({"reply": "Errore nella richiesta."}, status=400, headers=headers)
 
 
-# Handlers Telegram
 T_DATA, T_PERSONE, T_CONTATTO = range(3)
 C_DATE, C_ALLOGGIO, C_OSPITI, C_CONTATTO = range(3, 7)
 
@@ -191,7 +188,7 @@ async def prenota_tavolo_fine(update: Update, context: ContextTypes.DEFAULT_TYPE
             target_id = int(OWNER_CHAT_ID) if str(OWNER_CHAT_ID).isdigit() else OWNER_CHAT_ID
             await context.bot.send_message(chat_id=target_id, text=notifica, parse_mode="Markdown")
         except Exception as e:
-            print(f"Errore notifica: {e}")
+            print(f"Errore notifica: {e}", flush=True)
     return ConversationHandler.END
 
 
@@ -234,27 +231,38 @@ async def handle_tg_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(reply)
 
 
-# --- AVVIO PARALLELO WEB SERVER + TELEGRAM BOT ---
-async def start_web_server():
-    app = web.Application()
-    app.router.add_post("/api/chat", handle_web_chat)
-    app.router.add_options("/api/chat", handle_web_chat)
-    runner = web.AppRunner(app)
-    await runner.setup()
+async def on_startup(application):
+    app_web = web.Application()
+    app_web.router.add_post("/api/chat", handle_web_chat)
+    app_web.router.add_options("/api/chat", handle_web_chat)
     port = int(os.getenv("PORT", 10000))
+    runner = web.AppRunner(app_web)
+    await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", port)
     await site.start()
-    print(f"🌐 Web Server attivo sulla porta {port}")
+    application.bot_data["web_runner"] = runner
+    print(f"🌐 Server Web Chat attivo sulla porta {port}", flush=True)
 
 
-async def main_async():
+async def on_shutdown(application):
+    runner = application.bot_data.get("web_runner")
+    if runner:
+        await runner.cleanup()
+
+
+def main():
     token = os.getenv("TELEGRAM_BOT_TOKEN") or TELEGRAM_BOT_TOKEN
     if not token or token == "INCOLLA_QUI_IL_TOKEN_DI_BOTFATHER":
-        print("❌ TELEGRAM_BOT_TOKEN mancante!")
+        print("❌ TELEGRAM_BOT_TOKEN mancante!", flush=True)
         return
 
-    await start_web_server()
-    tg_app = ApplicationBuilder().token(token).build()
+    tg_app = (
+        ApplicationBuilder()
+        .token(token)
+        .post_init(on_startup)
+        .post_shutdown(on_shutdown)
+        .build()
+    )
 
     tavolo_handler = ConversationHandler(
         entry_points=[CommandHandler("prenota_tavolo", prenota_tavolo_start)],
@@ -284,12 +292,9 @@ async def main_async():
     tg_app.add_handler(camp_handler)
     tg_app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_tg_message))
 
-    print("🟢 TELEGRAM BOT & WEB CHAT API LIVE!")
-    await tg_app.initialize()
-    await tg_app.start()
-    await tg_app.updater.start_polling(drop_pending_updates=True)
-    await asyncio.Event().wait()
+    print("🟢 TELEGRAM BOT & WEB SERVER PRONTI SU RENDER!", flush=True)
+    tg_app.run_polling(drop_pending_updates=True)
 
 
 if __name__ == "__main__":
-    asyncio.run(main_async())
+    asyncio.run(main()) if False else main()
