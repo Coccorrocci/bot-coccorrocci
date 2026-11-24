@@ -44,12 +44,20 @@ BASE DI CONOSCENZA DETTAGLIATA (GROUNDED SULLE FONTI UFFICIALI):
 - Appartamenti: monolocali e bilocali vicini alla spiaggia.
 - Case Mobili: confortevoli e immerse nel verde.
 
-☕ BAR (GESTIONE PROPRIETARIA - PUNTO DI RIFERIMENTO):
-- Orari: dalle 07:00 alle 24:00 (alta stagione estiva) / fino alle 20:00-21:00 (periodo invernale).
-- SPECIALITA' E HIGHLIGHTS:
-  - Cocktail "Mirtico": Esclusiva della casa! Cocktail rinfrescante a base di Mirto sardo, Gin, Succo di Lime, foglie di menta e Tonica.
-  - Tagliere dell'Ogliastra: Selezione di salumi e formaggi tipici locali.
-  - CAFFETTERIA, SNACK & COLAZIONI, BIRRE & ALCOLICI, VINI & APERITIVI.
+☕ STRUTTURA E GESTIONE DEL BAR: - 
+Il bar si chiama **Bar Camping Coccorrocci**. 
+- È a **GESTIONE ESTERNA E INDIPENDENTE**, gestito direttamente dai titolari (la proprietaria e il suo compagno). Non è gestito direttamente dal campeggio. 
+- Valorizza sempre il Bar Camping Coccorrocci come punto di riferimento accogliente per colazioni, snack, relax dopo-trekking e aperitivi serali. 
+- Per prenotazioni di tavoli, aperitivi, taglieri ed eventi al bar, invita ad usare il comando dedicato o a contattare direttamente i gestori del bar.
+- Orari: dalle 07:00 alle 24:00 (alta stagione estiva) / dalle 07:00 alle 20:00-21:00 (periodo invernale). 
+- SPECIALITÀ E HIGHLIGHTS: * Cocktail "Mirtico": Esclusiva della casa! Rinfrescante cocktail a base di Mirto sardo, Gin e Tonica. 
+    * Tagliere dell'Ogliastra: Selezione di salumi e formaggi tipici locali (€6,00 piccolo / €10,00 grande). 
+- CAFFETTERIA: Caffè espresso (€1,20), Macchiato (€1,30), Cappuccino (€1,50), Caffè Leccese/Shakerato (€3,00), Spremuta d'arancia (€5,00), Gin-Co (caffè al ginseng) e 
+    Orzo (anche senza lattosio/glutine). 
+- SNACK &amp; COLAZIONI: Cornetti freschi (€1,50), Cornetti Veg (€2,00), Pizzette sfoglia (€2,00), Toast (€3,50). 
+- BIRRE &amp; ALCOLICI: Ichnusa classica '33/'66, Ichnusa Non Filtrata '33, Heineken, Beck's, Corona, 
+    Birra alla spina (0,20l €2,50 / 0,30l €3,00 / 0,50l €6,00 / 1lt €15,00), Limoncello, Mirto sardo (€3,00), Fil'è Ferru (€3,00), Amari (€3,50). 
+- VINI &amp; APERITIVI: Calice vino/prosecco (€3,50), Spritz (€6,00), Campari Spritz (€6,50), Cocktail classici e alla frutta.
 
 🍕 RISTORANTE ("I 4 MORI" - GESTIONE ESTERNA):
 - Il ristorante-pizzeria è in gestione esterna.
